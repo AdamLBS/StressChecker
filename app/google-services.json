@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "904450304943",
+    "firebase_url": "https://stresschecker-1599506301597.firebaseio.com",
+    "project_id": "stresschecker-1599506301597",
+    "storage_bucket": "stresschecker-1599506301597.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904450304943:android:ab582ecea2112613a1dd5a",
+        "android_client_info": {
+          "package_name": "com.adamlbs.stresschecker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904450304943-c84anfom52alv7l0qibulr3dh2fah5ui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7W_h5uSG14aZmLZ69U163V-V-xOuy1mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904450304943-c84anfom52alv7l0qibulr3dh2fah5ui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

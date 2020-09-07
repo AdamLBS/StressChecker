@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">StressChecker</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+    <string name="channel_name">Background</string>
+
+</resources>
