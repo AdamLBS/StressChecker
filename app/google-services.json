@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:904450304943:android:ab582ecea2112613a1dd5a",
+        "mobilesdk_app_id": "1:904450304943:android:b42ada505deec3bfa1dd5a",
         "android_client_info": {
           "package_name": "com.adamlbs.stresschecker"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "904450304943-e2cvufccg88mp43pch07n8pud29mpmo3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adamlbs.stresschecker",
+            "certificate_hash": "f0402f94728aca72d53886e8b23e8f384db61b68"
+          }
+        },
         {
           "client_id": "904450304943-c84anfom52alv7l0qibulr3dh2fah5ui.apps.googleusercontent.com",
           "client_type": 3

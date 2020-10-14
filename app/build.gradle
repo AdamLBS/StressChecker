@@ -5,12 +5,6 @@ apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     signingConfigs {
-        release {
-            storeFile file('C:\\Users\\Adam\\key_stress_checker.jks')
-            storePassword 'Adam1387'
-            keyAlias 'key_stress'
-            keyPassword 'Adam1387'
-        }
     }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -19,14 +13,17 @@ android {
         applicationId "com.adamlbs.stresschecker"
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.1"
+        multiDexEnabled true
 
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -113,7 +113,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                         btnPause.setVisibility(ImageButton.GONE);
                         btnStart.setVisibility(ImageButton.VISIBLE);
                         mTextView.setText("--");
-                        throw new RuntimeException("Test Crash");
+                        stopMeasure();
                     }
                 });
 
@@ -197,6 +197,40 @@ private void makenotification() {
                 .apply();
     }
 }
+    private void makenotification_service() {
+
+            int notificationId = 17;
+
+            Notification.Builder b = new Notification.Builder(this);
+            b.setVibrate(new long[]{500, 500});
+            b.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+            //FIX android O bug Notification add setChannelId("shipnow-message")
+            NotificationChannel mChannel = null;;
+
+            b.setSmallIcon(R.drawable.ic_launcher) // vector (doesn't work with png as well)
+                    .setContentTitle("Monitoring..")
+                    .setOnlyAlertOnce(true)
+                    .setContentText("StressChecker is monitoring your heart rate and will notify you if you're stressed !!")
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setDefaults( Notification.FLAG_ONLY_ALERT_ONCE)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mChannel = new NotificationChannel("your-channel", "yourSubjectName", NotificationManager.IMPORTANCE_HIGH);
+                b.setChannelId("your-channel");
+            }
+
+            NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notificationManager.createNotificationChannel(mChannel);
+                mChannel.setImportance(NotificationManager.IMPORTANCE_HIGH);
+                mChannel.enableVibration(true);
+            }
+            b.setDefaults(Notification.DEFAULT_SOUND);
+            b.setDefaults(Notification.DEFAULT_VIBRATE);
+            notificationManager.notify(notificationId, b.build());
+        }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         float mHeartRateFloat2 = event.values[0];
