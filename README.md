@@ -1,4 +1,4 @@
-# [StressChecker] WearOS App
+# StressChecker WearOS App
 
 * [About the app](#about-the-app)
 * [Build instructions](#build-instructions)
