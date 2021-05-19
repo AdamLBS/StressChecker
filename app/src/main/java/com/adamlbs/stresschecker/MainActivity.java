@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -67,6 +68,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.hardware.SensorManager.SENSOR_DELAY_UI;
 import static android.provider.CalendarContract.EXTRA_EVENT_ID;
 
 public class MainActivity extends WearableActivity implements SensorEventListener {
@@ -77,8 +79,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private ImageButton btnPause;
     private Drawable imgStart;
     private SensorManager mSensorManager;
+    int READINGRATE = 1000000000; // time in us
+
     private Sensor mHeartRateSensor;
     String key;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startService(new Intent(MainActivity.this, MyService.class));
@@ -128,6 +133,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         mHeartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
 
     }
+
     private void checkPermissions() {
 
         boolean BODY_SENSORSPermissionGranted =
@@ -137,12 +143,13 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         if (BODY_SENSORSPermissionGranted) {
 
         } else {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.BODY_SENSORS},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BODY_SENSORS},
                     100);
         }
     }
+
     private void startMeasure() {
-        boolean sensorRegistered = mSensorManager.registerListener(this, mHeartRateSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        boolean sensorRegistered = mSensorManager.registerListener(this, mHeartRateSensor, SENSOR_DELAY_UI);
         Log.d("Sensor Status:", " Sensor registered: " + (sensorRegistered ? "yes" : "no"));
         String available = String.valueOf(sensorRegistered);
         String navailable = "false";
@@ -157,62 +164,26 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         SharedPreferences settings = this.getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
         settings.edit().clear().commit();
     }
-private void makenotification() {
 
-    boolean firstrun2 = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun2", true);
-    if (firstrun2) {
-        int notificationId = 1723;
+    private void makenotification() {
 
-        Notification.Builder b = new Notification.Builder(this);
-        b.setVibrate(new long[]{500, 500});
-        b.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-        //FIX android O bug Notification add setChannelId("shipnow-message")
-        NotificationChannel mChannel = null;;
-
-        b.setSmallIcon(R.drawable.ic_launcher) // vector (doesn't work with png as well)
-                .setContentTitle("You're stressed !")
-                .setOnlyAlertOnce(true)
-                .setContentText("Your heart rate indicates that you are stressed. Relax, do breathing exercises to stabilize your heart rate!")
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults( Notification.FLAG_ONLY_ALERT_ONCE)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel("your-channel", "yourSubjectName", NotificationManager.IMPORTANCE_HIGH);
-            b.setChannelId("your-channel");
-        }
-
-        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(mChannel);
-            mChannel.setImportance(NotificationManager.IMPORTANCE_HIGH);
-            mChannel.enableVibration(true);
-        }
-        b.setDefaults(Notification.DEFAULT_SOUND);
-        b.setDefaults(Notification.DEFAULT_VIBRATE);
-        notificationManager.notify(notificationId, b.build());
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .edit()
-                .putBoolean("firstrun2", false)
-                .apply();
-    }
-}
-    private void makenotification_service() {
-
-            int notificationId = 17;
+        boolean firstrun2 = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun2", true);
+        if (firstrun2) {
+            int notificationId = 1723;
 
             Notification.Builder b = new Notification.Builder(this);
             b.setVibrate(new long[]{500, 500});
             b.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
             //FIX android O bug Notification add setChannelId("shipnow-message")
-            NotificationChannel mChannel = null;;
+            NotificationChannel mChannel = null;
+            ;
 
             b.setSmallIcon(R.drawable.ic_launcher) // vector (doesn't work with png as well)
-                    .setContentTitle("Monitoring..")
+                    .setContentTitle("You're stressed !")
                     .setOnlyAlertOnce(true)
-                    .setContentText("StressChecker is monitoring your heart rate and will notify you if you're stressed !!")
+                    .setContentText("Your heart rate indicates that you are stressed. Relax, do breathing exercises to stabilize your heart rate!")
                     .setPriority(Notification.PRIORITY_HIGH)
-                    .setDefaults( Notification.FLAG_ONLY_ALERT_ONCE)
+                    .setDefaults(Notification.FLAG_ONLY_ALERT_ONCE)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -229,9 +200,78 @@ private void makenotification() {
             b.setDefaults(Notification.DEFAULT_SOUND);
             b.setDefaults(Notification.DEFAULT_VIBRATE);
             notificationManager.notify(notificationId, b.build());
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("firstrun2", false)
+                    .apply();
+        }
+    }
+
+    private void makenotification_service() {
+
+        int notificationId = 17;
+
+        Notification.Builder b = new Notification.Builder(this);
+        b.setVibrate(new long[]{500, 500});
+        b.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        //FIX android O bug Notification add setChannelId("shipnow-message")
+        NotificationChannel mChannel = null;
+        ;
+
+        b.setSmallIcon(R.drawable.ic_launcher) // vector (doesn't work with png as well)
+                .setContentTitle("Monitoring..")
+                .setOnlyAlertOnce(true)
+                .setContentText("StressChecker is monitoring your heart rate and will notify you if you're stressed !!")
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.FLAG_ONLY_ALERT_ONCE)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mChannel = new NotificationChannel("your-channel", "yourSubjectName", NotificationManager.IMPORTANCE_HIGH);
+            b.setChannelId("your-channel");
         }
 
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(mChannel);
+            mChannel.setImportance(NotificationManager.IMPORTANCE_HIGH);
+            mChannel.enableVibration(true);
+        }
+        b.setDefaults(Notification.DEFAULT_SOUND);
+        b.setDefaults(Notification.DEFAULT_VIBRATE);
+        notificationManager.notify(notificationId, b.build());
+    }
+
+
+    public void changetextstressed() {
+final String stressed = "You seems stressed ! Relax, do breathing exercises to stabilize your heart rate! ";
+        ((Activity) this).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((TextView)mTextView).setText(stressed);
+                mTextView.postInvalidate();
+
+                Log.d("Stress status", "Stressed");
+
+            }
+        });
+
+
+
+
+    }
+
+    public void changetextnotstressed() {
+
+        mTextView = (TextView) findViewById(R.id.bpmText);
+        mTextView.setText("Your heart rate is normal! " +
+                "\n You don't seems stressed ! ");
+            mTextView.postInvalidate();
+
+    }
+
     @Override
+
     public void onSensorChanged(SensorEvent event) {
         float mHeartRateFloat2 = event.values[0];
         int j = Math.round(mHeartRateFloat2);
@@ -240,22 +280,30 @@ private void makenotification() {
             Log.d("Old Heart Rate :", String.valueOf(j));
             Log.d("New Heart Rate :", String.valueOf(i));
 
-            int heartrate_differences = j-i;
-            Log.d("Difference between old and new heart rate :", String.valueOf(heartrate_differences));
-            if (heartrate_differences >= 15) {
-                mTextView.setText("You seems stressed ! " +
-                        "\n Relax, do breathing exercises to stabilize your heart rate! ");
+            int heartrate_differences = j - i;
+            Log.d("Difference between old and new h1eart rate :", String.valueOf(heartrate_differences));
+            if (i <= 0) {
+                changetextnotstressed();
+            } else {
 
 
-                }            if (heartrate_differences < 15) {
-                mTextView.setText("Your heart rate is normal! " +
-                        "\n You don't seems stressed ! ");
+                if (heartrate_differences > 15) {
+                    changetextstressed();
 
 
+
+            }
+             else{
+
+                changetextnotstressed();
 
             }
 
+                {
+
+                }
             }
+        }
         int mHeartRate2 = Math.round(mHeartRateFloat2);
         Log.d("Sensor Status:", String.valueOf(mHeartRate2));
 

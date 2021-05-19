@@ -70,7 +70,7 @@ startMyOwnForeground();
                 Log.d("Service", "Service started ");
                 startService();
             }
-        }, 0, 5, TimeUnit.MINUTES);
+        }, 0, 120, TimeUnit.SECONDS);
         ScheduledExecutorService scheduler2 = Executors.newSingleThreadScheduledExecutor();
         scheduler2.scheduleAtFixedRate(new Runnable() {
 
