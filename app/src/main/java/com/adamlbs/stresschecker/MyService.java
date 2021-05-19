@@ -41,6 +41,12 @@ public class MyService extends Service  implements SensorEventListener {
     public Context context = this;
     public Handler handler = null;
     public PendingIntent pIntentlogin;
+    float mHeartRateFloat2 ;
+    int j = Math.round(mHeartRateFloat2);
+    int stresstimes;
+    int error;
+    String key;
+    int j2;
     public static Runnable runnable = null;
     public MyService() {
         super();
@@ -70,7 +76,7 @@ startMyOwnForeground();
                 Log.d("Service", "Service started ");
                 startService();
             }
-        }, 0, 120, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
         ScheduledExecutorService scheduler2 = Executors.newSingleThreadScheduledExecutor();
         scheduler2.scheduleAtFixedRate(new Runnable() {
 
@@ -240,7 +246,43 @@ startMyOwnForeground();
     private void startMeasure() {
         boolean sensorRegistered = mSensorManager.registerListener((SensorEventListener) this, mHeartRateSensor, SensorManager.SENSOR_DELAY_FASTEST);
         Log.d("Sensor Status:", " Sensor registered: " + (sensorRegistered ? "yes" : "no"));
+        Handler handler = new Handler();
+        int finalStresstimes = stresstimes;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                stopmonitor();
+                if (error == 1 ) {
+                    stopmonitor();
+                }
 
+
+                else {
+                    if (j2 == 0 ) {
+                        stopmonitor();
+                    } else
+                    if (finalStresstimes <= 0) {
+
+                        stopmonitor();
+
+
+                    } else {
+
+
+                        if (finalStresstimes > 15) {
+
+                            makenotification();
+                            stopmonitor();
+
+
+
+                        }
+                    }
+
+                    {
+
+                    }
+                }                }
+        }, 20000);
     }
 
     private void makenotification() {
@@ -297,24 +339,36 @@ startMyOwnForeground();
 
 
     public void onSensorChanged(SensorEvent event) {
-        float mHeartRateFloat = event.values[0];
-        int j = Math.round(mHeartRateFloat);
+        mHeartRateFloat2 = event.values[0];
+        int j = Math.round(mHeartRateFloat2);
+        stresstimes = 0;
 
-        for (int i = 0; i < Math.round(mHeartRateFloat); i++) {
+        j2 = j;
+        for (int i = 0; i < Math.round(mHeartRateFloat2); i++) {
             Log.d("Old Heart Rate :", String.valueOf(j));
             Log.d("New Heart Rate :", String.valueOf(i));
 
-            int heartrate_differences = j-i;
-            Log.d("Difference between old and new heart rate :", String.valueOf(heartrate_differences));
+            int heartrate_differences = j - i;
+            Log.d("Difference between old and new h1eart rate :", String.valueOf(heartrate_differences));
             if (heartrate_differences > 15) {
-                boolean alreadyExecuted = false;
-makenotification();
-
-
+                stresstimes = stresstimes+1;
+            } else if (j == 0){
+                error = 1;
             }
+
         }
-        int mHeartRate = Math.round(mHeartRateFloat);
-        Log.d("Sensor Status:", String.valueOf(mHeartRate));
+        int mHeartRate2 = Math.round(mHeartRateFloat2);
+        Log.d("Sensor Status:", String.valueOf(mHeartRate2));
+
+
+        SensorManager sensorManager =
+                (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        boolean hasSensor = sensorManager.getDefaultSensor(34, true /* wakeup */) != null;
+
+        Log.d("Sensor Status:", String.valueOf(hasSensor));
+
+
+
     }
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 

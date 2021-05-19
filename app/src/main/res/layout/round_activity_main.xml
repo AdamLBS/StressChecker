@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.adamlbs.stresschecker.MainActivity"
     tools:deviceIds="wear_round"
     android:background="@color/white">
@@ -17,16 +18,19 @@
         android:text="--"
         android:textSize="10dp" />
 
-    <ImageView
-        android:id="@+id/heartImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
 
-        android:src="@drawable/ic_launcher"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/heartImage"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_rawRes="@raw/heart"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
         android:layout_above="@id/heartRateText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        />
 
     <TextView
         android:id="@+id/bpmText"
